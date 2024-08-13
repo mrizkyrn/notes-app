@@ -1,95 +1,48 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useQuery } from '@apollo/client';
+import { Container, Heading, SimpleGrid, Text, Flex, Spinner } from '@chakra-ui/react';
+import { Note } from '@/type';
+import { AddButton } from '@/components/Buttons';
+import NoteCard from '@components/NoteCard';
+
+import { GET_NOTES_QUERY } from '@/graphql/queries';
 
 export default function Home() {
+  const { data, loading, error } = useQuery<{ notes: Note[] }>(GET_NOTES_QUERY);
+  const router = useRouter();
+
+  if (loading) {
+    return (
+      <Flex align="center" justify="center" h="100vh" w="100vw" direction="column">
+        <Spinner size="xl" />
+        <Text mt={4}>Loading...</Text>
+      </Flex>
+    );
+  }
+  if (error) return <Text color="red.500">Terjadi kesalahan: {error.message}</Text>;
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <Container maxW="container.md" py={10} px={25} centerContent>
+      <Flex justify="space-between" w="100%" mb="10">
+        <Heading as="h1" size="lg">
+          Daftar Catatan
+        </Heading>
+        <AddButton onClick={() => router.push('/create-note')} />
+      </Flex>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      {data?.notes.length ?? 0 > 0 ? (
+        <SimpleGrid columns={[1, 2, 2]} spacing={5} w="100%">
+          {data!.notes.map((note) => (
+            <NoteCard key={note.id} title={note.title} body={note.body} createdAt={note.createdAt} />
+          ))}
+        </SimpleGrid>
+      ) : (
+        <Text fontSize={{ base: 'sm', md: 'md' }} color="gray.500" mt={35}>
+          Tidak ada catatan
+        </Text>
+      )}
+    </Container>
   );
 }
