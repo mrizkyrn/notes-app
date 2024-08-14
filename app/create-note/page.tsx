@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { HStack, Heading, Input, Textarea, FormControl, FormLabel, useToast, Container, Box } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import { gql, useMutation } from '@apollo/client';
+import { HStack, Heading, Input, Textarea, FormControl, FormLabel, useToast, Container, Box } from '@chakra-ui/react';
+import { CREATE_NOTE_MUTATION } from '@/graphql/mutations';
 import { BackButton, CreateButton } from '@/components/Buttons';
 
-import { CREATE_NOTE_MUTATION } from '@/graphql/mutations';
 
 const CreateNote: React.FC = () => {
   const [title, setTitle] = useState('');
@@ -77,7 +77,7 @@ const CreateNote: React.FC = () => {
 
   return (
     <Container maxW="container.md" py={10} centerContent>
-      <HStack spacing={3} mb={6} w="100%">
+      <HStack spacing={3} mb={10} w="100%">
         <BackButton onClick={() => router.back()} />
         <Heading as="h1" size="lg" textAlign="center">
           Buat Catatan

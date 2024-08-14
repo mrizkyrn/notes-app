@@ -1,14 +1,16 @@
 import React from 'react';
+import Link from 'next/link';
 import { Box, Heading, Text, Flex } from '@chakra-ui/react';
 import { formatDate } from '@/lib/utils';
 
 interface NoteCardProps {
+  id: string;
   title: string;
   body: string;
   createdAt: string;
 }
 
-const NoteCard: React.FC<NoteCardProps> = ({ title, body, createdAt }) => {
+const NoteCard: React.FC<NoteCardProps> = ({ id, title, body, createdAt }) => {
   return (
     <Box
       borderWidth="1px"
@@ -25,19 +27,21 @@ const NoteCard: React.FC<NoteCardProps> = ({ title, body, createdAt }) => {
         cursor: 'pointer',
       }}
     >
-      <Flex direction="column" h="100%">
-        <Flex direction="column" flex="1">
-          <Heading as="h3" size="md">
-            {title}
-          </Heading>
-          <Text mt={2} noOfLines={3}>
-            {body}
+      <Link href={`/notes/${id}`} passHref>
+        <Flex direction="column" h="100%">
+          <Flex direction="column" flex="1">
+            <Heading as="h3" size="md">
+              {title}
+            </Heading>
+            <Text mt={2} noOfLines={2}>
+              {body}
+            </Text>
+          </Flex>
+          <Text fontSize="sm" color="gray.500" mt={4}>
+            {formatDate(createdAt)}
           </Text>
         </Flex>
-        <Text fontSize="sm" color="gray.500" mt={4}>
-          {formatDate(createdAt)}
-        </Text>
-      </Flex>
+      </Link>
     </Box>
   );
 };
