@@ -1,13 +1,12 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
-import { Container, Heading, Text, HStack, Box, Stack } from '@chakra-ui/react';
+import { Container, Heading, Text, Box, Stack } from '@chakra-ui/react';
 import { GET_NOTE_QUERY } from '@/graphql/queries';
 import { Note } from '@/type';
 import { formatDate } from '@/lib/utils';
-import { BackButton } from '@/components/Buttons';
 import Loading from '@/components/Loading';
+import BackHeading from '@/components/BackHeading';
 
 interface NoteData {
   note: Note;
@@ -24,7 +23,6 @@ interface NoteDetailProps {
 }
 
 const NoteDetail: React.FC<NoteDetailProps> = ({ params }) => {
-  const router = useRouter();
   const noteId = params.id;
 
   const { data, loading, error } = useQuery<NoteData, NoteVars>(GET_NOTE_QUERY, {
@@ -36,26 +34,21 @@ const NoteDetail: React.FC<NoteDetailProps> = ({ params }) => {
 
   return (
     <Container maxW="container.md" minH="100vh" py={10} centerContent>
-      <HStack spacing={3} mb={10} w="100%">
-        <BackButton onClick={() => router.back()} />
-        <Heading as="h1" size="lg" textAlign="center">
-          Detail Catatan
-        </Heading>
-      </HStack>
+      <BackHeading title="Detail Catatan" />
 
       {loading ? (
         <Loading />
       ) : data?.note ? (
         <Box borderWidth={1} borderRadius="lg" p={6} bg="white" w="100%">
           <Stack spacing={2}>
-            <Heading as="h1" size="lg">
+            <Heading as="h1" size={{ base: 'md', md: 'lg' }}>
               {data.note.title}
             </Heading>
-            <Text fontSize="md" color="gray.600">
-              dibuat pada {formatDate(data.note.createdAt)}
-            </Text>
-            <Text fontSize="lg" mt={4}>
+            <Text fontSize={{ base: 'md', md: 'lg' }} color="gray.800">
               {data.note.body}
+            </Text>
+            <Text fontSize={{ base: 'sm', md: 'md' }} color="gray.600" mt={4}>
+              dibuat pada {formatDate(data.note.createdAt)}
             </Text>
           </Stack>
         </Box>

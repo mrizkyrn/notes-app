@@ -38,7 +38,6 @@
         });
       },
       deleteNote: async (_: unknown, args: NoteArgs): Promise<NoteModel> => {
-        console.log('Delete note with id be:', args.id);
         return await prisma.note.delete({
           where: { id: args.id },
         });

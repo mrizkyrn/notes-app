@@ -13,12 +13,14 @@ import Loading from '@/components/Loading';
 import DialogAlert from '@/components/DialogAlert';
 
 export default function Home() {
+  const router = useRouter();
+  const toast = useToast();
+
   const { data, loading, error } = useQuery<{ notes: Note[] }>(GET_NOTES_QUERY);
+
   const [deleteNote] = useMutation(DELETE_NOTE_MUTATION);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
-  const router = useRouter();
-  const toast = useToast();
 
   if (error) return <Text color="red.500">Terjadi kesalahan: {error.message}</Text>;
 
@@ -47,6 +49,8 @@ export default function Home() {
           description: `Catatan dengan id ${selectedNoteId} berhasil dihapus.`,
           status: 'success',
           position: 'top-right',
+          duration: 5000,
+          isClosable: true,
         });
       } catch (error: any) {
         toast({
@@ -54,6 +58,8 @@ export default function Home() {
           description: error.message,
           status: 'error',
           position: 'top-right',
+          duration: 5000,
+          isClosable: true,
         });
       } finally {
         setSelectedNoteId(null);
@@ -64,7 +70,7 @@ export default function Home() {
 
   return (
     <Container maxW="container.md" minH="100vh" py={10} centerContent>
-      <Flex justify="space-between" w="100%" mb="10">
+      <Flex justify="space-between" w="100%" mb={{ base: 5, md: 10 }}>
         <Heading as="h1" size="lg">
           Daftar Catatan
         </Heading>
@@ -74,7 +80,7 @@ export default function Home() {
       {loading ? (
         <Loading />
       ) : data?.notes.length ?? 0 > 0 ? (
-        <SimpleGrid columns={[1, 2, 2]} spacing={5} w="100%">
+        <SimpleGrid columns={[1, 1, 2]} spacing={5} w="100%">
           {data!.notes.map((note) => (
             <NoteCard
               key={note.id}
@@ -91,9 +97,11 @@ export default function Home() {
           ))}
         </SimpleGrid>
       ) : (
-        <Text fontSize={{ base: 'sm', md: 'md' }} color="gray.500" mt={35}>
-          Tidak ada catatan
-        </Text>
+        <Flex direction="column" align="center" h="100%" flex={1} justify="center">
+          <Text fontSize={{ base: 'sm', md: 'md' }} color="gray.500">
+            Tidak ada catatan
+          </Text>
+        </Flex>
       )}
 
       <DialogAlert
