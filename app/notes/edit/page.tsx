@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useToast, Text } from '@chakra-ui/react';
+import { Container, useToast, Text } from '@chakra-ui/react';
 import { useMutation, useQuery } from '@apollo/client';
 import { UPDATE_NOTE_MUTATION } from '@/graphql/mutations';
 import { GET_NOTE_QUERY } from '@/graphql/queries';
 import NoteForm from '@/components/NoteForm';
 import Loading from '@/components/Loading';
+import BackHeading from '@/components/BackHeading';
 
 const EditNotePage = () => {
   const router = useRouter();
@@ -25,7 +26,6 @@ const EditNotePage = () => {
     title: '',
     body: '',
   });
-
   const [updateNote] = useMutation(UPDATE_NOTE_MUTATION);
 
   useEffect(() => {
@@ -61,7 +61,6 @@ const EditNotePage = () => {
 
       router.push('/');
     } catch (error) {
-      console.error('Error updating note:', error);
       toast({
         title: 'Terjadi kesalahan.',
         description: 'Gagal memperbarui catatan. Silakan coba lagi.',
@@ -73,19 +72,20 @@ const EditNotePage = () => {
     } finally {
       setSubmitting(false);
     }
-  }
+  };
 
-  if (loading) return <Loading />;
   if (error) return <Text color="red.500">Error: {error.message}</Text>;
 
   return (
-    <NoteForm
-      type='edit'
-      note={note}
-      setNote={setNote}
-      submitting={submitting}
-      handleSubmit={handleSubmit}
-    />
+    <Container maxW="container.md" minH="100vh" py={10} centerContent>
+      <BackHeading title="Edit Catatan" />
+
+      {loading ? (
+        <Loading />
+      ) : (
+        <NoteForm type="edit" note={note} setNote={setNote} submitting={submitting} handleSubmit={handleSubmit} />
+      )}
+    </Container>
   );
 };
 

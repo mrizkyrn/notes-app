@@ -4,7 +4,7 @@ import { ApolloProvider, InMemoryCache, ApolloClient } from '@apollo/client';
 import { ChakraProvider } from '@chakra-ui/react';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:3000/api/graphql',
+  uri: '/api/graphql',
   cache: new InMemoryCache(),
 });
 

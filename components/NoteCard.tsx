@@ -1,8 +1,8 @@
 import React from 'react';
-import Link from 'next/link';
-import { Box, Heading, Text, Flex, IconButton } from '@chakra-ui/react';
-import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/navigation';
+import { Box, Heading, Text, Flex } from '@chakra-ui/react';
 import { formatDate } from '@/lib/utils';
+import { DeleteButton, EditButton } from './Buttons';
 
 interface NoteCardProps {
   id: string;
@@ -14,15 +14,12 @@ interface NoteCardProps {
 }
 
 const NoteCard: React.FC<NoteCardProps> = ({ id, title, body, createdAt, onEdit, onDelete }) => {
-  const handleEditClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onEdit(id);
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/notes/${id}`);
   };
 
-  const handleDeleteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onDelete(id);
-  };
   return (
     <Box
       borderWidth="1px"
@@ -38,38 +35,33 @@ const NoteCard: React.FC<NoteCardProps> = ({ id, title, body, createdAt, onEdit,
         transform: 'scale(1.01)',
         cursor: 'pointer',
       }}
+      onClick={handleCardClick}
     >
       <Flex direction="column" justify="space-between" h="100%">
-        <Link href={`/notes/${id}`} passHref>
-          <Heading as="h3" size="md">
+        <Flex direction="column" h="100%" gap={2} pb={4}>
+          <Heading as="h2" size="md">
             {title}
           </Heading>
-          <Text mt={2} noOfLines={2}>
-            {body}
-          </Text>
-        </Link>
+          <Text noOfLines={2}>{body}</Text>
+        </Flex>
 
-        <Flex align="center" justify="space-between" mt={4}>
+        <Flex align="center" justify="space-between">
           <Text fontSize="sm" color="gray.500">
             {formatDate(createdAt)}
           </Text>
           <Flex>
-            <IconButton
-              aria-label="Edit Note"
-              icon={<EditIcon />}
-              size="xs"
-              variant="outline"
-              colorScheme="blue"
-              onClick={handleEditClick}
+            <EditButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(id);
+              }}
               mr={2}
             />
-            <IconButton
-              aria-label="Delete Note"
-              icon={<DeleteIcon />}
-              size="xs"
-              variant="outline"
-              colorScheme="red"
-              onClick={handleDeleteClick}
+            <DeleteButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(id);
+              }}
             />
           </Flex>
         </Flex>

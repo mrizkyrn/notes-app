@@ -21,7 +21,7 @@ const DialogAlert: React.FC<DialogAlertProps> = ({ isOpen, onClose, onConfirm, t
   const cancelRef = React.useRef<HTMLButtonElement>(null);
 
   return (
-    <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+    <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose} isCentered>
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">

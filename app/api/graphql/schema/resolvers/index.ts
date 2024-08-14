@@ -1,49 +1,50 @@
-  import { PrismaClient, Note as NoteModel } from '@prisma/client';
+import { query } from '@/lib/db';
+import { transformNotes } from '@/lib/utils';
 
-  const prisma = new PrismaClient();
+interface NoteArgs {
+  id: string;
+  title?: string;
+  body?: string;
+}
 
-  interface NoteArgs {
-    id: string;
-    title?: string;
-    body?: string;
-  }
+interface Note {
+  id: String;
+  title: String;
+  body: String;
+  createdAt: String;
+}
 
-  const resolvers = {
-    Query: {
-      notes: async (): Promise<NoteModel[]> => {
-        return await prisma.note.findMany();
-      },
-      note: async (_: unknown, args: NoteArgs): Promise<NoteModel | null> => {
-        return await prisma.note.findUnique({
-          where: { id: args.id },
-        });
-      },
+const resolvers = {
+  Query: {
+    notes: async (): Promise<Note[]> => {
+      const result = await query('SELECT * FROM notes');
+      return transformNotes(result);
     },
-    Mutation: {
-      createNote: async (_: unknown, args: NoteArgs): Promise<NoteModel> => {
-        return await prisma.note.create({
-          data: {
-            title: args.title!,
-            body: args.body!,
-          },
-        });
-      },
-      updateNote: async (_: unknown, args: NoteArgs): Promise<NoteModel> => {
-        return await prisma.note.update({
-          where: { id: args.id },
-          data: {
-            title: args.title || undefined,
-            body: args.body || undefined,
-          },
-        });
-      },
-      deleteNote: async (_: unknown, args: NoteArgs): Promise<NoteModel> => {
-        console.log('Delete note with id be:', args.id);
-        return await prisma.note.delete({
-          where: { id: args.id },
-        });
-      },
+    note: async (_: unknown, args: NoteArgs): Promise<Note | null> => {
+      const result = await query('SELECT * FROM notes WHERE id = $1', [args.id]);
+      return transformNotes(result)[0] || null;
     },
-  };
+  },
+  Mutation: {
+  createNote: async (_: unknown, args: NoteArgs): Promise<Note> => {
+    const result = await query<Note>(
+      'INSERT INTO notes (title, body) VALUES ($1, $2) RETURNING *',
+      [args.title, args.body]
+    );
+    return result[0];
+  },
+  updateNote: async (_: unknown, args: NoteArgs): Promise<Note> => {
+    const result = await query<Note>(
+      'UPDATE notes SET title = $1, body = $2 WHERE id = $3 RETURNING *',
+      [args.title, args.body, args.id]
+    );
+    return result[0];
+  },
+  deleteNote: async (_: unknown, args: NoteArgs): Promise<Note> => {
+    const result = await query<Note>('DELETE FROM notes WHERE id = $1 RETURNING *', [args.id]);
+    return result[0];
+  },
+  },
+};
 
-  export default resolvers;
+export default resolvers;

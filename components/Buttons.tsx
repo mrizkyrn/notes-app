@@ -1,5 +1,5 @@
 import { Button, IconButton, ButtonProps } from '@chakra-ui/react';
-import { ChevronLeftIcon } from '@chakra-ui/icons';
+import { ChevronLeftIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 
 interface AddButtonProps extends ButtonProps {
   onClick: () => void;
@@ -22,14 +22,14 @@ export const AddButton: React.FC<AddButtonProps> = ({ onClick, ...props }) => {
   );
 };
 
-interface CreateButtonProps extends ButtonProps {
+interface SubmitButtonProps extends ButtonProps {
   isSubmitting?: boolean;
 }
 
-export const CreateButton: React.FC<CreateButtonProps> = ({ isSubmitting, ...props }) => {
+export const SubmitButton: React.FC<SubmitButtonProps> = ({ children, isSubmitting, ...props }) => {
   return (
     <Button colorScheme="teal" type="submit" isLoading={isSubmitting} {...props}>
-      Buat Catatan
+      {children}
     </Button>
   );
 };
@@ -46,6 +46,50 @@ export const BackButton: React.FC<BackButtonProps> = ({ onClick }) => {
       onClick={onClick}
       variant="ghost"
       cursor="pointer"
+    />
+  );
+};
+
+interface EditButtonProps extends ButtonProps {
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+export const EditButton: React.FC<EditButtonProps> = ({ onClick, ...props }) => {
+  return (
+    <IconButton
+      aria-label="Edit Note"
+      size="xs"
+      icon={<EditIcon />}
+      colorScheme="blue"
+      variant="outline"
+      onClick={onClick}
+      _hover={{
+        bg: 'blue.500',
+        color: 'white',
+      }}
+      {...props}
+    />
+  );
+};
+
+interface DeleteButtonProps extends ButtonProps {
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+export const DeleteButton: React.FC<DeleteButtonProps> = ({ onClick, ...props }) => {
+  return (
+    <IconButton
+      aria-label="Delete Note"
+      size="xs"
+      icon={<DeleteIcon />}
+      colorScheme="red"
+      variant="outline"
+      onClick={onClick}
+      _hover={{
+        bg: 'red.500',
+        color: 'white',
+      }}
+      {...props}
     />
   );
 };

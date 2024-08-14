@@ -3,20 +3,20 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { gql, useMutation } from '@apollo/client';
-import { useToast } from '@chakra-ui/react';
+import { Container, useToast } from '@chakra-ui/react';
 import { CREATE_NOTE_MUTATION } from '@/graphql/mutations';
 import NoteForm from '@/components/NoteForm';
+import BackHeading from '@/components/BackHeading';
 
 const CreateNote: React.FC = () => {
   const router = useRouter();
   const toast = useToast();
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [note, setNote] = useState({
     title: '',
     body: '',
   });
-
   const [createNote] = useMutation(CREATE_NOTE_MUTATION, {
     update(cache, { data: { createNote } }) {
       cache.modify({
@@ -43,7 +43,7 @@ const CreateNote: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    setSubmitting(true);
 
     try {
       const { data } = await createNote({
@@ -68,16 +68,22 @@ const CreateNote: React.FC = () => {
         title: 'Terjadi kesalahan',
         description: 'Terjadi kesalahan saat membuat catatan. Silahkan coba lagi.',
         status: 'error',
-        position: 'top-left',
+        position: 'top-right',
         duration: 5000,
         isClosable: true,
       });
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
   };
 
-  return <NoteForm type="create" note={note} setNote={setNote} submitting={isSubmitting} handleSubmit={handleSubmit} />;
+  return (
+    <Container maxW="container.md" py={10} centerContent>
+      <BackHeading title="Buat Catatan" />
+
+      <NoteForm type="edit" note={note} setNote={setNote} submitting={submitting} handleSubmit={handleSubmit} />
+    </Container>
+  );
 };
 
 export default CreateNote;

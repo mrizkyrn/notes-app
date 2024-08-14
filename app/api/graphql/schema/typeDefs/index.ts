@@ -6,7 +6,6 @@ const typeDefs = gql`
     title: String!
     body: String!
     createdAt: String!
-    updatedAt: String!
   }
 
   type Query {
