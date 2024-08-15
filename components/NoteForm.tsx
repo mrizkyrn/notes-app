@@ -36,7 +36,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ type, note, setNote, submitting, ha
         />
       </FormControl>
 
-      <SubmitButton isSubmitting={submitting}>{type === 'create' ? 'Tambah' : 'Perbarui'}</SubmitButton>
+      <SubmitButton isSubmitting={submitting}>{type === 'create' ? 'Buat Catatan' : 'Perbarui'}</SubmitButton>
     </Box>
   );
 };

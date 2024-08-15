@@ -1,14 +1,15 @@
 import { Pool, QueryResultRow } from "pg";
 import * as dotenv from 'dotenv';
-import * as fs from 'fs';
 
 dotenv.config();
+
+const caCert = process.env.CA_CERT;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: true,
-    ca: fs.readFileSync("./ca.pem").toString(),
+    ca: caCert ? Buffer.from(caCert) : undefined,
   },
 });
 

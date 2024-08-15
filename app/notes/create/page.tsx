@@ -81,7 +81,7 @@ const CreateNote: React.FC = () => {
     <Container maxW="container.md" py={10} centerContent>
       <BackHeading title="Buat Catatan" />
 
-      <NoteForm type="edit" note={note} setNote={setNote} submitting={submitting} handleSubmit={handleSubmit} />
+      <NoteForm type="create" note={note} setNote={setNote} submitting={submitting} handleSubmit={handleSubmit} />
     </Container>
   );
 };

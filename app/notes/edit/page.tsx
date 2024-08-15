@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Container, useToast, Text } from '@chakra-ui/react';
 import { useMutation, useQuery } from '@apollo/client';
@@ -10,7 +10,7 @@ import NoteForm from '@/components/NoteForm';
 import Loading from '@/components/Loading';
 import BackHeading from '@/components/BackHeading';
 
-const EditNotePage = () => {
+const EditNotePageContent = () => {
   const router = useRouter();
   const toast = useToast();
   const searchParams = useSearchParams();
@@ -86,6 +86,14 @@ const EditNotePage = () => {
         <NoteForm type="edit" note={note} setNote={setNote} submitting={submitting} handleSubmit={handleSubmit} />
       )}
     </Container>
+  );
+};
+
+const EditNotePage = () => {
+  return (
+    <Suspense fallback={<Loading />}>
+      <EditNotePageContent />
+    </Suspense>
   );
 };
 
